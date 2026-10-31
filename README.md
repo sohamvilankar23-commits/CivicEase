@@ -80,35 +80,34 @@
 ## 🛠️ System Architecture & Technology Stack
 
 ```mermaid
+
 graph TD
-    subgraph Client Application [Flutter Multi-Platform Frontend]
-        UI[Material UI & Dark Theme]
-        AuthUI[Auth & Profile Screens]
-        GrievanceUI[Grievance Submission & Tracking]
-        AdminUI[Admin Dashboard & Control Panel]
-        EmergUI[Emergency Dialer Screen]
-        Router[GoRouter Navigation & Guards]
+    subgraph ClientApp["Client Application - Flutter Multi-Platform Frontend"]
+        UI["Material UI & Dark Theme"]
+        AuthUI["Auth & Profile Screens"]
+        GrievanceUI["Grievance Submission & Tracking"]
+        AdminUI["Admin Dashboard & Control Panel"]
+        EmergUI["Emergency Dialer Screen"]
+        Router["GoRouter Navigation & Guards"]
     end
 
-    subgraph Firebase Cloud [Backend as a Service]
-        FAuth[Firebase Authentication]
-        Firestore[(Cloud Firestore NoSQL)]
-        FCF[Firebase Cloud Functions]
+    subgraph FirebaseCloud["Firebase Cloud - Backend as a Service"]
+        FAuth["Firebase Authentication"]
+        Firestore[("Cloud Firestore NoSQL")]
+        FCF["Firebase Cloud Functions"]
     end
 
-    subgraph Third-Party Services
-        Cloudinary[Cloudinary Media Storage]
-        GMaps[Google Maps Platform]
+    subgraph ThirdParty["Third-Party Services"]
+        Cloudinary["Cloudinary Media Storage"]
+        GMaps["Google Maps Platform"]
     end
 
-    Client Application -->|Authentication| FAuth
-    Client Application -->|Real-time Streams & CRUD| Firestore
-    Client Application -->|Request Upload Signature| FCF
-    FCF -->|Signed Token| Client Application
-    Client Application -->|Direct Signed Upload| Cloudinary
-    Client Application -->|Map Tiles & Geocoding| GMaps
-```
-
+    ClientApp -->|Authentication| FAuth
+    ClientApp -->|Real-time Streams & CRUD| Firestore
+    ClientApp -->|Request Upload Signature| FCF
+    FCF -->|Signed Token| ClientApp
+    ClientApp -->|Direct Signed Upload| Cloudinary
+    ClientApp -->|Map Tiles & Geocoding| GMaps
 ### Core Technologies
 
 | Layer | Technology | Details |
