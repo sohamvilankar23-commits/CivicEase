@@ -1,0 +1,23 @@
+{
+    "name": "CivicEase",
+    "short_name": "CivicEase",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "A civic grievance redressal app",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/civic-ease-logo-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/civic-ease-logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

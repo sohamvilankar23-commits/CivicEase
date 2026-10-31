@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "148354290567",
+    "project_id": "civicease1",
+    "storage_bucket": "civicease1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148354290567:android:62ed13d9c5d4b35af8b922",
+        "android_client_info": {
+          "package_name": "com.example.civicease1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "148354290567-f2g4dder7s3sdlljqvgp66n6t5i4655e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6g4kR_sqSlJKl1F7rfco9ZOWPre-YTpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "148354290567-f2g4dder7s3sdlljqvgp66n6t5i4655e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148354290567:android:3852ee06bcf3d151f8b922",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "148354290567-f2g4dder7s3sdlljqvgp66n6t5i4655e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6g4kR_sqSlJKl1F7rfco9ZOWPre-YTpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "148354290567-f2g4dder7s3sdlljqvgp66n6t5i4655e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

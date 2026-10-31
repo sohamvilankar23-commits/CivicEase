@@ -1,0 +1,36 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "civicease1",
+          "appId": "1:148354290567:android:3852ee06bcf3d151f8b922",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "civicease1",
+          "configurations": {
+            "android": "1:148354290567:android:3852ee06bcf3d151f8b922",
+            "web": "1:148354290567:web:6fd23cd638e6fab6f8b922",
+            "windows": "1:148354290567:web:b5f4823a566f06fdf8b922"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

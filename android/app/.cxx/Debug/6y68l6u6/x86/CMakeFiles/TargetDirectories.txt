@@ -1,0 +1,2 @@
+D:/first successfully made app/CivicEase/android/app/.cxx/Debug/6y68l6u6/x86/CMakeFiles/edit_cache.dir
+D:/first successfully made app/CivicEase/android/app/.cxx/Debug/6y68l6u6/x86/CMakeFiles/rebuild_cache.dir

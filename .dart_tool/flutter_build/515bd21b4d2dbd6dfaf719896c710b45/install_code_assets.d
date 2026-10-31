@@ -1,0 +1,1 @@
+ D:\\first\ successfully\ made\ app\\CivicEasealmostdone\\.dart_tool\\flutter_build\\515bd21b4d2dbd6dfaf719896c710b45\\native_assets.json: 
