@@ -6,7 +6,7 @@
 [![Google Maps](https://img.shields.io/badge/Google%20Maps-4285F4?style=for-the-badge&logo=google-maps&logoColor=white)](https://developers.google.com/maps)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**CivicEase** is a modern, cross-platform civic issue reporting and municipal grievance management system built with Flutter and Firebase. It bridges the gap between citizens and municipal authorities, empowering citizens to report local infrastructure issues (water supply failures, electrical hazards, potholes, sanitation lapses) and track their resolution in real time, while providing municipal administrators with an end-to-end dashboard to triage, monitor, and resolve complaints efficiently.
+**CivicEase** is a modern, cross-platform civic issue reporting and municipal grievance management application built using Flutter and Firebase. It connects citizens with municipal authorities by allowing users to report local infrastructure problems, attach photographic evidence, and track complaint resolution in real time. Municipal administrators can manage grievances, monitor complaint statistics, and update resolution progress through a dedicated dashboard.
 
 ---
 
@@ -14,20 +14,20 @@
 
 - [Key Features](#-key-features)
   - [Citizen Capabilities](#1-citizen-capabilities)
-  - [Municipal Authority & Admin Capabilities](#2-municipal-authority--admin-capabilities)
+  - [Municipal Authority and Admin Capabilities](#2-municipal-authority-and-admin-capabilities)
   - [Emergency Response System](#3-emergency-response-system)
-- [System Architecture & Technology Stack](#-system-architecture--technology-stack)
+- [System Architecture and Technology Stack](#-system-architecture-and-technology-stack)
 - [Project Directory Structure](#-project-directory-structure)
-- [Database Schema (Firestore)](#-database-schema-firestore)
-- [Cloud Functions & Cloudinary Integration](#-cloud-functions--cloudinary-integration)
-- [Getting Started & Installation](#-getting-started--installation)
+- [Database Schema](#-database-schema-firestore)
+- [Cloud Functions and Cloudinary Integration](#-cloud-functions-and-cloudinary-integration)
+- [Getting Started](#-getting-started-and-installation)
   - [Prerequisites](#prerequisites)
-  - [Cloning and Dependencies](#step-1-clone-and-install-dependencies)
-  - [Firebase Configuration](#step-2-firebase-setup)
+  - [Installation](#step-1-clone-and-install-dependencies)
+  - [Firebase Setup](#step-2-firebase-setup)
   - [Cloud Functions Setup](#step-3-cloud-functions-setup)
   - [Running the Application](#step-4-run-the-app)
 - [Routes and Navigation Flow](#-routes-and-navigation-flow)
-- [UI & Theming System](#-ui--theming-system)
+- [UI and Theming System](#-ui-and-theming-system)
 - [Contributing](#-contributing)
 - [License](#-license)
 
@@ -36,64 +36,77 @@
 ## 🌟 Key Features
 
 ### 1. Citizen Capabilities
-* **Flexible Authentication**: Secure registration and sign-in via Email/Password and Google OAuth sign-in (`firebase_auth`, `google_sign_in`), with credential caching via `SharedPreferences`.
-* **Grievance Filing**:
-  * Category-based submission across major civic sectors: **Water**, **Electrical**, **Roads**, and **Sanitation**.
-  * Input fields for complaint title, location address, and detailed description.
-  * **Anonymous Reporting**: Option to submit grievances anonymously to protect whistleblower identity while still allowing authorities to take action.
-  * Geolocation coordinate tagging using `geolocator` and `google_maps_flutter`.
-  * Visual proof attachments via image capture / gallery picker with Cloudinary upload integration.
-* **Real-Time Status Tracking**:
-  * Track complaint status pipeline: `Pending` ➔ `In Progress` ➔ `Resolved`.
-  * View detailed complaint timelines, admin progress notes, and geotagged map view.
-* **Categorical Browsing & Filtering**:
-  * Live category counts and issue summaries right on the dashboard.
-  * Search complaints by keywords and filter by date range, category, or resolution status.
-* **Profile & Account Management**:
-  * Edit user profiles, contact numbers, and passwords directly inside the app.
 
-### 2. Municipal Authority & Admin Capabilities
-* **Role-Based Access Control (RBAC)**: Elevated administrative privileges based on Firestore `users.isAdmin` attribute.
-* **Administrative Analytics Dashboard**:
-  * High-level statistical summaries: real-time counters for Total, Pending, In Progress, and Resolved grievances.
-  * System-wide Admin Announcement / Bulletin board note synchronized in real time (`admin_dashboard/note`).
-* **Complaint Triage & Resolution Management**:
-  * Fast status toggling between `Pending`, `In Progress`, and `Resolved`.
-  * Dedicated note-taking and progress update field per complaint for transparency.
-  * Full visibility into complaint coordinates with embedded interactive Google Maps and media proofs.
-  * Ability to view reporter identity (with elevated admin access for anonymous reports when necessary).
+- **Flexible Authentication:** Secure registration and sign-in using Email/Password and Google Sign-In through Firebase Authentication.
+- **Grievance Filing:**
+  - Submit complaints across major civic categories: **Water, Electrical, Roads, and Sanitation**.
+  - Provide complaint titles, location addresses, and detailed descriptions.
+  - **Anonymous Reporting:** Submit grievances anonymously while allowing authorities to investigate and resolve reported issues.
+  - Capture geographical coordinates using `geolocator` and `google_maps_flutter`.
+  - Attach photographic evidence using image capture or gallery selection.
+  - Upload images through Cloudinary integration.
+- **Real-Time Status Tracking:**
+  - Track complaints through the `Pending`, `In Progress`, and `Resolved` stages.
+  - View complaint details, progress notes, and geographical information.
+- **Categorical Browsing and Filtering:**
+  - View category-wise complaint counts and issue summaries.
+  - Search complaints using keywords.
+  - Filter complaints by date, category, and resolution status.
+- **Profile and Account Management:**
+  - View and edit user profile information.
+  - Update contact numbers and account passwords.
+
+### 2. Municipal Authority and Admin Capabilities
+
+- **Role-Based Access Control (RBAC):** Administrative access is controlled through the `users.isAdmin` attribute in Firestore.
+- **Administrative Analytics Dashboard:**
+  - Display statistics for Total, Pending, In Progress, and Resolved grievances.
+  - Display a system-wide administrative announcement or bulletin board note.
+  - Synchronize dashboard information using Firestore.
+- **Complaint Triage and Resolution Management:**
+  - Update complaint statuses between `Pending`, `In Progress`, and `Resolved`.
+  - Add progress notes to individual complaints.
+  - View complaint locations through integrated Google Maps.
+  - Access photographic evidence submitted with grievances.
+  - View reporter information according to administrative permissions.
 
 ### 3. Emergency Response System
-* **One-Tap Emergency Calling**: Direct phone launcher integration (`url_launcher`) for vital Indian public service and emergency contacts:
-  * 🚓 Police (`100`)
-  * 🚑 Ambulance (`108`)
-  * 🚒 Fire Brigade (`101`)
-  * 👩 Women Helpline (`1091`)
-  * 🧒 Child Helpline (`1098`)
-  * 👴 Senior Citizen Helpline (`14567`)
-  * ⚖️ Anti-Corruption Helpline (`1031`)
-  * 🚆 Railway Enquiry (`139`)
-* **Emergency Safety Tips**: Built-in actionable emergency guidelines and situational response checklist.
+
+- **One-Tap Emergency Calling:** Direct phone launcher integration using `url_launcher` for important Indian public service contacts.
+
+| Emergency Service | Contact Number |
+|---|---:|
+| 🚓 Police | `100` |
+| 🚑 Ambulance | `108` |
+| 🚒 Fire Brigade | `101` |
+| 👩 Women Helpline | `1091` |
+| 🧒 Child Helpline | `1098` |
+| 👴 Senior Citizen Helpline | `14567` |
+| ⚖️ Anti-Corruption Helpline | `1031` |
+| 🚆 Railway Enquiry | `139` |
+
+- **Emergency Safety Tips:** Provides useful emergency guidelines and situational response instructions within the application.
 
 ---
 
-## 🛠️ System Architecture & Technology Stack
+## 🛠️ System Architecture and Technology Stack
+
+The application follows a Flutter-based client architecture supported by Firebase backend services and third-party integrations.
 
 ```mermaid
-
 graph TD
-    subgraph ClientApp["Client Application - Flutter Multi-Platform Frontend"]
-        UI["Material UI & Dark Theme"]
-        AuthUI["Auth & Profile Screens"]
-        GrievanceUI["Grievance Submission & Tracking"]
-        AdminUI["Admin Dashboard & Control Panel"]
+    subgraph ClientApp["Client Application - Flutter Frontend"]
+        UI["Material UI and Dark Theme"]
+        AuthUI["Authentication and Profile Screens"]
+        GrievanceUI["Grievance Submission and Tracking"]
+        AdminUI["Admin Dashboard and Control Panel"]
         EmergUI["Emergency Dialer Screen"]
-        Router["GoRouter Navigation & Guards"]
+        Router["GoRouter Navigation and Guards"]
     end
 
-    subgraph FirebaseCloud["Firebase Cloud - Backend as a Service"]
+    subgraph FirebaseCloud["Firebase Cloud Services"]
         FAuth["Firebase Authentication"]
-        Firestore[("Cloud Firestore NoSQL")]
+        Firestore[("Cloud Firestore NoSQL Database")]
         FCF["Firebase Cloud Functions"]
     end
 
@@ -103,23 +116,26 @@ graph TD
     end
 
     ClientApp -->|Authentication| FAuth
-    ClientApp -->|Real-time Streams & CRUD| Firestore
+    ClientApp -->|Real-Time Data and CRUD| Firestore
     ClientApp -->|Request Upload Signature| FCF
     FCF -->|Signed Token| ClientApp
-    ClientApp -->|Direct Signed Upload| Cloudinary
-    ClientApp -->|Map Tiles & Geocoding| GMaps
+    ClientApp -->|Direct Signed Image Upload| Cloudinary
+    ClientApp -->|Maps and Geolocation| GMaps
+```
+
 ### Core Technologies
 
-| Layer | Technology | Details |
+| Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend Framework** | **Flutter 3.x (Dart 3.x)** | Cross-platform UI toolkit targeting Mobile (Android/iOS) and Web |
-| **Routing & Navigation** | **GoRouter (`go_router`)** | Declarative routing with route guards, redirect logic, and web URL strategy |
-| **Authentication** | **Firebase Auth & Google Sign-In** | Email/password auth, Google OAuth provider, persistent session state |
-| **Database** | **Cloud Firestore** | Real-time NoSQL document database for grievances, user profiles, and notes |
-| **Serverless Backend** | **Firebase Cloud Functions (Node.js)** | Secure cryptographic signature generation for Cloudinary uploads |
-| **Media Storage** | **Cloudinary API** | Secure cloud image storage with transformations and fast CDN delivery |
-| **Mapping & Location** | **Google Maps Flutter, Geolocator** | Location picker, geolocation capture, interactive maps |
-| **Styling & Fonts** | **Google Fonts (Poppins)** | Bespoke dark-mode palette with clean municipal design system |
+| **Frontend Framework** | Flutter 3.x / Dart 3.x | Cross-platform application development |
+| **Navigation** | GoRouter | Application routing and route guards |
+| **Authentication** | Firebase Auth and Google Sign-In | User registration and authentication |
+| **Database** | Cloud Firestore | Real-time storage of grievances and user information |
+| **Backend** | Firebase Cloud Functions | Server-side processing and Cloudinary signature generation |
+| **Media Storage** | Cloudinary API | Image uploads and cloud media storage |
+| **Maps and Location** | Google Maps Flutter and Geolocator | Maps, location capture, and geolocation |
+| **Styling** | Google Fonts (Poppins) | Application typography and visual design |
+| **Local Storage** | SharedPreferences | Local preference and credential-related data storage |
 
 ---
 
@@ -127,53 +143,64 @@ graph TD
 
 ```text
 CivicEase/
-├── android/                        # Android native configurations & build files
-├── assets/                         # Static assets & graphics
-│   ├── app_icon.png                # Application launcher icon
+│
+├── android/                         # Android native configurations
+├── assets/                          # Static assets and graphics
+│   ├── app_icon.png                 # Application launcher icon
 │   └── images/
-│       └── logo.png                # CivicEase branding logo
-├── functions/                      # Firebase Cloud Functions (Node.js backend)
-│   ├── index.js                    # Cloudinary signature generation function
-│   ├── package.json                # Cloud functions dependencies
+│       └── logo.png                 # CivicEase branding
+│
+├── functions/                       # Firebase Cloud Functions
+│   ├── index.js                     # Cloudinary signature generation
+│   ├── package.json                 # Backend dependencies
 │   └── package-lock.json
-├── ios/                            # iOS native configurations
-├── lib/                            # Application Dart codebase
-│   ├── firebase_options.dart       # Firebase CLI generated platform configuration
-│   ├── main.dart                   # Application entry point, GoRouter setup, error screens
-│   ├── theme.dart                  # AppTheme, dark palette (Colors, Typography, Themes)
-│   ├── web_url_strategy.dart       # Path-based URL strategy for Web
-│   ├── web_url_strategy_stub.dart  # Stub for non-web platforms
-│   ├── screens/                    # UI Screens
-│   │   ├── welcome_screen.dart           # Onboarding splash / landing screen
-│   │   ├── login_screen.dart             # Email/Password login with Remember Me
-│   │   ├── register_screen.dart          # Registration & Google Sign-In
-│   │   ├── home_screen.dart              # User dashboard with status summaries & category cards
-│   │   ├── category_screen.dart          # Filtered category view (Water, Roads, etc.)
-│   │   ├── complaint_screen.dart         # Grievances list with search and date filters
-│   │   ├── complaint_detail_screen.dart  # Full complaint details, Google Map, progress note
-│   │   ├── add_complaint_screen.dart     # Grievance submission form (anonymous toggle, photo)
-│   │   ├── tracking_screen.dart          # Individual grievance tracker
-│   │   ├── emergency_screen.dart         # Emergency hotlines and quick-dial actions
-│   │   ├── profile_screen.dart           # User profile info and admin link
-│   │   ├── edit_profile_screen.dart      # Edit user profile details
-│   │   ├── change_password_screen.dart   # Change password utility
-│   │   ├── admin_dashboard_screen.dart   # Admin analytics, stats, and bulletin note
-│   │   └── admin_panel_screen.dart       # Admin management, bulk triage, and search
-│   └── widgets/                    # Reusable components
-│       ├── app_bottom_nav_bar.dart       # Standardized bottom navigation bar
-│       ├── custom_text_field.dart        # Reusable themed input fields
-│       └── rounded_button.dart           # Themed primary call-to-action buttons
-├── firebase.json                   # Firebase configurations (Functions, Flutter targets)
-├── pubspec.yaml                    # Flutter dependencies and asset declarations
-└── README.md                       # Comprehensive project documentation
+│
+├── ios/                             # iOS native configurations
+│
+├── lib/                             # Main Dart application code
+│   ├── firebase_options.dart        # Firebase platform configuration
+│   ├── main.dart                    # Application entry point
+│   ├── theme.dart                   # Application theme and styling
+│   ├── web_url_strategy.dart        # Web URL strategy
+│   ├── web_url_strategy_stub.dart   # Non-web URL strategy stub
+│   │
+│   ├── screens/                     # Application screens
+│   │   ├── welcome_screen.dart
+│   │   ├── login_screen.dart
+│   │   ├── register_screen.dart
+│   │   ├── home_screen.dart
+│   │   ├── category_screen.dart
+│   │   ├── complaint_screen.dart
+│   │   ├── complaint_detail_screen.dart
+│   │   ├── add_complaint_screen.dart
+│   │   ├── tracking_screen.dart
+│   │   ├── emergency_screen.dart
+│   │   ├── profile_screen.dart
+│   │   ├── edit_profile_screen.dart
+│   │   ├── change_password_screen.dart
+│   │   ├── admin_dashboard_screen.dart
+│   │   └── admin_panel_screen.dart
+│   │
+│   └── widgets/                     # Reusable UI components
+│       ├── app_bottom_nav_bar.dart
+│       ├── custom_text_field.dart
+│       └── rounded_button.dart
+│
+├── firebase.json                    # Firebase configuration
+├── pubspec.yaml                     # Flutter dependencies
+└── README.md                        # Project documentation
 ```
 
 ---
 
 ## 🗄️ Database Schema (Firestore)
 
+CivicEase uses Cloud Firestore to store user information, civic grievances, and administrative announcements.
+
 ### 1. `users` Collection
+
 Stores registered user information and administrative privileges.
+
 ```json
 {
   "uid": "FIREBASE_AUTH_UID",
@@ -186,7 +213,9 @@ Stores registered user information and administrative privileges.
 ```
 
 ### 2. `grievances` Collection
-Stores every civic issue filed through the application.
+
+Stores civic complaints submitted through the application.
+
 ```json
 {
   "title": "Broken Water Pipeline causing leakage",
@@ -194,7 +223,7 @@ Stores every civic issue filed through the application.
   "description": "Continuous water outflow near Main Cross Street.",
   "address": "45 Park Avenue, Ward 12",
   "location": "GeoPoint(18.5204, 73.8567)",
-  "photoUrl": "https://res.cloudinary.com/civicease1/image/upload/...",
+  "photoUrl": "CLOUDINARY_IMAGE_URL",
   "userId": "FIREBASE_AUTH_UID",
   "userName": "Jane Citizen",
   "isAnonymous": false,
@@ -205,8 +234,11 @@ Stores every civic issue filed through the application.
 ```
 
 ### 3. `admin_dashboard` Collection
-Houses municipal administrative broadcasts and global notes.
-* **Document**: `admin_dashboard/note`
+
+Stores administrative announcements and dashboard information.
+
+**Document:** `admin_dashboard/note`
+
 ```json
 {
   "text": "Monsoon preparedness review scheduled for this Friday across all sectors."
@@ -215,120 +247,145 @@ Houses municipal administrative broadcasts and global notes.
 
 ---
 
-## ☁️ Cloud Functions & Cloudinary Integration
+## ☁️ Cloud Functions and Cloudinary Integration
 
-CivicEase uses a serverless approach for media uploads. Rather than exposing Cloudinary API secrets on the mobile client, Firebase Cloud Functions generate a secure HMAC-SHA1 signature:
+CivicEase uses Firebase Cloud Functions to support secure image uploads through Cloudinary.
 
-1. **Client** invokes `getCloudinarySignature` via Firebase Functions SDK.
-2. **Function** (`functions/index.js`):
-   - Validates user authentication (`context.auth`).
-   - Creates a timestamped, user-isolated folder path: `complaint_photos/{userId}`.
-   - Computes a SHA-1 HMAC hash using the Cloudinary API secret.
-   - Returns signature, timestamp, apiKey, and cloud name to the client.
-3. **Client** uploads the image file directly to Cloudinary using the authorized signature.
-4. The resulting Cloudinary URL is stored in Firestore with the grievance document.
+Instead of exposing the Cloudinary API secret directly in the Flutter application, the backend generates an upload signature.
+
+### Upload Workflow
+
+1. **Client Request:** The Flutter application invokes `getCloudinarySignature` using the Firebase Functions SDK.
+2. **Authentication:** The Cloud Function validates the authenticated user.
+3. **Signature Generation:** The function generates a timestamped upload signature using the Cloudinary API secret.
+4. **Signature Response:** The function returns the required upload information, including the signature, timestamp, API key, and cloud name.
+5. **Image Upload:** The Flutter application uploads the image directly to Cloudinary using the generated signature.
+6. **Database Storage:** The resulting Cloudinary image URL is stored in the corresponding Firestore grievance document.
+
+The upload process helps keep the Cloudinary API secret on the server side rather than exposing it in the client application.
 
 ---
 
-## 🚀 Getting Started & Installation
+## 🚀 Getting Started and Installation
+
+Follow these steps to set up and run CivicEase locally.
 
 ### Prerequisites
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`v3.0.0` or higher)
-- [Node.js](https://nodejs.org/) (`v18` or `v20`) & npm
-- [Firebase CLI](https://firebase.google.com/docs/cli) (`npm install -g firebase-tools`)
-- A physical Android/iOS device or emulator, or Chrome for Web testing
-- A Google Maps API key (for map views and geocoding)
 
----
+Before installing the project, ensure you have:
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.0.0 or higher)
+- [Dart SDK](https://dart.dev/get-dart)
+- [Node.js](https://nodejs.org/) (version 18 or 20) and npm
+- [Firebase CLI](https://firebase.google.com/docs/cli)
+- Android device or emulator, or Chrome for Web testing
+- Google Maps API key for map-related functionality
+- Firebase project with the required services enabled
 
 ### Step 1: Clone and Install Dependencies
 
+Clone the repository:
+
 ```bash
-# Clone the repository
 git clone https://github.com/sohamvilankar23-commits/CivicEase.git
+```
 
-# Navigate to project directory
+Navigate to the project directory:
+
+```bash
 cd CivicEase
+```
 
-# Install Flutter dependencies
+Install Flutter dependencies:
+
+```bash
 flutter pub get
 ```
 
----
-
 ### Step 2: Firebase Setup
 
-1. Log into your Firebase account:
-   ```bash
-   firebase login
-   ```
-2. Configure FlutterFire for your platforms:
-   ```bash
-   flutterfire configure
-   ```
-   *Select your Firebase project (e.g. `civicease1`). This regenerates/updates `lib/firebase_options.dart` and `android/app/google-services.json`.*
+1. Log in to Firebase:
 
-3. Enable the following Firebase services in the [Firebase Console](https://console.firebase.google.com/):
-   - **Authentication**: Enable **Email/Password** and **Google Sign-In**.
-   - **Firestore Database**: Create database in production mode.
-   - Set up Firestore Security Rules:
-     ```javascript
-     rules_version = '2';
-     service cloud.firestore {
-       match /databases/{database}/documents {
-         match /users/{userId} {
-           allow read, write: if request.auth != null;
-         }
-         match /grievances/{grievanceId} {
-           allow read: if request.auth != null;
-           allow create: if request.auth != null;
-           allow update, delete: if request.auth != null;
-         }
-         match /admin_dashboard/{docId} {
-           allow read, write: if request.auth != null;
-         }
-       }
-     }
-     ```
+```bash
+firebase login
+```
 
----
+2. Configure FlutterFire:
+
+```bash
+flutterfire configure
+```
+
+3. Select your Firebase project. This generates or updates the Firebase platform configuration files.
+
+4. Enable the required services in the [Firebase Console](https://console.firebase.google.com/):
+
+   - **Firebase Authentication:** Enable Email/Password and Google Sign-In providers.
+   - **Cloud Firestore:** Create and configure your Firestore database.
+   - **Firebase Cloud Functions:** Enable the service if using the Cloudinary signature function.
+
+5. Configure Firestore Security Rules according to your application's authentication and authorization requirements.
+
+**Important:** Do not use unrestricted authenticated-user write permissions in a production deployment. Rules should restrict users to their own records and allow administrative operations only for verified administrators.
 
 ### Step 3: Cloud Functions Setup
 
-1. Navigate to the `functions/` directory:
-   ```bash
-   cd functions
-   npm install
-   ```
-2. Configure your Cloudinary credentials in `functions/index.js` or via Firebase environment config:
-   ```javascript
-   const CLOUDINARY_API_KEY = 'YOUR_API_KEY';
-   const CLOUDINARY_API_SECRET = 'YOUR_API_SECRET';
-   const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME';
-   ```
-3. Deploy functions to Firebase:
-   ```bash
-   firebase deploy --only functions
-   cd ..
-   ```
+Navigate to the Cloud Functions directory:
 
----
+```bash
+cd functions
+```
+
+Install backend dependencies:
+
+```bash
+npm install
+```
+
+Configure the required Cloudinary credentials securely using Firebase-supported secret management.
+
+The following values are required:
+
+```text
+CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET
+CLOUDINARY_CLOUD_NAME
+```
+
+Do not commit actual API secrets or private credentials to GitHub.
+
+Deploy the Cloud Functions:
+
+```bash
+firebase deploy --only functions
+```
+
+Return to the project root:
+
+```bash
+cd ..
+```
 
 ### Step 4: Run the App
 
-#### Android
-Ensure Android device or emulator is connected:
+**Android**
+
+Connect an Android device or start an emulator:
+
 ```bash
 flutter run -d android
 ```
 
-#### Web
-Launch with Chrome:
+**Web**
+
+Run the application using Chrome:
+
 ```bash
 flutter run -d chrome
 ```
 
-#### Windows Desktop
+**Windows Desktop**
+
 ```bash
 flutter run -d windows
 ```
@@ -337,57 +394,76 @@ flutter run -d windows
 
 ## 🧭 Routes and Navigation Flow
 
-CivicEase uses **GoRouter** with route guards that automatically redirect unauthenticated users to `/welcome`:
+CivicEase uses **GoRouter** for navigation between application screens.
+
+The main navigation structure includes:
 
 ```text
-/welcome              --> Onboarding landing screen
-   ├── /login         --> Sign in with Email / Password
-   └── /register      --> Create new account or Google Sign-In
-/home                 --> Main Citizen Dashboard
-   ├── /category/:id  --> Category details (Water, Electrical, Roads, Sanitation)
-   ├── /complaint     --> Grievance directory with search & date filters
-   ├── /add-complaint --> File a new civic grievance
-   ├── /tracking      --> Track status of a specific complaint
-   ├── /emergency     --> Emergency helplines & quick dialer
-   ├── /profile       --> User account info
-   │     ├── /edit-profile
-   │     └── /change-password
-   ├── /admin-panel   --> Admin complaint triage & filter tool
-   └── /admin-dashboard -> Admin statistical metrics & public noticeboard
+/welcome
+    ├── /login
+    └── /register
+
+/home
+    ├── /category/:id
+    ├── /complaint
+    ├── /add-complaint
+    ├── /tracking
+    ├── /emergency
+    ├── /profile
+    │     ├── /edit-profile
+    │     └── /change-password
+    ├── /admin-panel
+    └── /admin-dashboard
 ```
+
+The application uses authentication and route-guard logic to control access to relevant screens.
 
 ---
 
-## 🎨 UI & Theming System
+## 🎨 UI and Theming System
 
-The app applies an intuitive, modern civic theme customized in [lib/theme.dart](file:///e:/app%20made%20by%20soham/first%20successfully%20made%20app/CivicEase/lib/theme.dart):
+CivicEase uses a modern dark-themed interface designed to provide a consistent and accessible user experience.
 
-* **Primary Color**: `#1E3A8A` (Deep Blue - authoritative and clean)
-* **Secondary Color**: `#1F2937` (Dark Slate Gray - sleek dark background)
-* **Accent Color**: `#F59E0B` (Vibrant Amber - call-to-actions and pending status)
-* **Card Color**: `#374151` / `#2A2A2A` (Elevated card contrast)
-* **Typography**: Powered by `GoogleFonts.poppins` for readability and modern polish
+The application's theme is configured in [`lib/theme.dart`](lib/theme.dart).
+
+### Design Elements
+
+- **Primary Color:** `#1E3A8A` - Deep Blue
+- **Secondary Color:** `#1F2937` - Dark Slate Gray
+- **Accent Color:** `#F59E0B` - Amber
+- **Card Colors:** `#374151` and `#2A2A2A`
+- **Typography:** Google Fonts Poppins
+
+The interface uses reusable widgets, consistent typography, and a unified color palette across application screens.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions to CivicEase are welcome! To contribute:
+Contributions and suggestions are welcome.
 
-1. **Fork the Repository**
-2. **Create a Feature Branch**:
-   ```bash
-   git checkout -b feature/NewCivicFeature
-   ```
-3. **Commit your changes**:
-   ```bash
-   git commit -m "feat: Add new municipal feature"
-   ```
-4. **Push to branch**:
-   ```bash
-   git push origin feature/NewCivicFeature
-   ```
-5. **Open a Pull Request**
+To contribute:
+
+1. Fork the repository.
+2. Create a feature branch:
+
+```bash
+git checkout -b feature/NewCivicFeature
+```
+
+3. Commit your changes:
+
+```bash
+git commit -m "feat: Add new municipal feature"
+```
+
+4. Push your branch:
+
+```bash
+git push origin feature/NewCivicFeature
+```
+
+5. Open a Pull Request.
 
 ---
 
