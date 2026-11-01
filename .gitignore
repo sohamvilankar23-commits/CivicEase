@@ -67,3 +67,13 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Flutter generated files
+.dart_tool/
+/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Local run scripts
+run.bat
+run.ps1

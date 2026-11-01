@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/app_bottom_nav_bar.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
@@ -99,7 +102,115 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     setState(() => _isSavingNote = true);
     await FirebaseFirestore.instance.collection('admin_dashboard').doc('note').set({'text': _adminNote});
     setState(() => _isSavingNote = false);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note saved')));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note saved')));
+    }
+  }
+
+  Widget _buildComplaintPhoto(String? photoUrl) {
+    if (photoUrl == null || photoUrl.trim().isEmpty) return const SizedBox.shrink();
+    if (photoUrl.startsWith('data:image')) {
+      try {
+        final base64Data = photoUrl.split(',').last;
+        final bytes = base64Decode(base64Data);
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.memory(
+              bytes,
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+            ),
+          ),
+        );
+      } catch (_) {
+        return const SizedBox.shrink();
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: CachedNetworkImage(
+          imageUrl: photoUrl,
+          height: 180,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            height: 180,
+            color: Colors.grey[800],
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          errorWidget: (context, url, error) => const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComplaintLocation(Map<String, dynamic> data) {
+    final address = data['address'] as String? ?? '';
+    final GeoPoint? location = data['location'] as GeoPoint?;
+
+    if (address.isEmpty && location == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (address.isNotEmpty)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.location_on, size: 16, color: Color(0xFF10B981)),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    address,
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          if (location != null) ...[
+            const SizedBox(height: 6),
+            InkWell(
+              onTap: () async {
+                final mapsUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}');
+                if (await canLaunchUrl(mapsUrl)) {
+                  await launchUrl(mapsUrl, mode: LaunchMode.externalApplication);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: const Color(0xFF10B981).withOpacity(0.5)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.map, size: 16, color: Color(0xFF10B981)),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Map Coordinates: ${location.latitude.toStringAsFixed(4)}, ${location.longitude.toStringAsFixed(4)} (Open Map)',
+                      style: const TextStyle(color: Color(0xFF10B981), fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   @override
@@ -196,47 +307,95 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
                       }
                       var complaints = snapshot.data!.docs.where((doc) {
-                        bool matchesStatus = _filter == 'All' || doc['status']?.toString() == _filter;
+                        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                        bool matchesStatus = _filter == 'All' || data['status']?.toString() == _filter;
                         return matchesStatus;
                       }).toList();
+
+                      if (complaints.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text('No complaints in this category.', style: TextStyle(color: Colors.white70)),
+                        );
+                      }
+
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: complaints.length,
                         itemBuilder: (context, index) {
                           var doc = complaints[index];
+                          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
                           return Card(
                             color: const Color(0xFF2A2A2A),
-                            child: ListTile(
-                              title: Text(
-                                doc['title']?.toString() ?? 'No Title',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              subtitle: Text(
-                                'Category: ${doc['category']?.toString() ?? 'Unknown'}\nDate: ${(doc['createdAt'] as Timestamp?)?.toDate().toString().split(' ')[0] ?? 'Unknown'}',
-                                style: const TextStyle(color: Colors.white70),
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    doc['status']?.toString() ?? 'Pending',
-                                    style: TextStyle(
-                                      color: (doc['status']?.toString() ?? 'Pending') == 'Pending'
-                                          ? Colors.orange
-                                          : (doc['status']?.toString() == 'In Progress')
-                                          ? Colors.yellow
-                                          : Colors.green,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  IconButton(
-                                    icon: const Icon(Icons.edit, color: Colors.white70),
-                                    onPressed: () => _updateStatus(doc.id, doc['status']?.toString() ?? 'Pending'),
-                                  ),
-                                ],
-                              ),
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: InkWell(
                               onTap: () => context.go('/tracking', extra: doc.id),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Chip(
+                                          label: Text(
+                                            data['category']?.toString() ?? 'General',
+                                            style: const TextStyle(fontSize: 12, color: Colors.white),
+                                          ),
+                                          backgroundColor: const Color(0xFF1E3A8A),
+                                          padding: EdgeInsets.zero,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              data['status']?.toString() ?? 'Pending',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: (data['status']?.toString() ?? 'Pending') == 'Pending'
+                                                    ? Colors.orange
+                                                    : (data['status']?.toString() == 'In Progress')
+                                                    ? Colors.yellow
+                                                    : Colors.green,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            IconButton(
+                                              icon: const Icon(Icons.edit, color: Colors.white70, size: 20),
+                                              tooltip: 'Cycle Status',
+                                              onPressed: () => _updateStatus(doc.id, data['status']?.toString() ?? 'Pending'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      data['title']?.toString() ?? 'No Title',
+                                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                                    ),
+                                    if (data['description'] != null && (data['description'] as String).isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        data['description'],
+                                        style: const TextStyle(fontSize: 14, color: Colors.white70),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                    if (data['photoUrl'] != null)
+                                      _buildComplaintPhoto(data['photoUrl']),
+                                    _buildComplaintLocation(data),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Date: ${(data['createdAt'] as Timestamp?)?.toDate().toString().split(' ')[0] ?? 'Unknown'}',
+                                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },
